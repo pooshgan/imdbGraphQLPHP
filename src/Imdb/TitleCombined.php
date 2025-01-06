@@ -131,6 +131,7 @@ query TitleCombinedMain(\$id: ID!) {
     }
     titleType {
       text
+      canHaveEpisodes
     }
     releaseYear {
       year
@@ -146,6 +147,17 @@ query TitleCombinedMain(\$id: ID!) {
     }
     ratingsSummary {
       aggregateRating
+      voteCount
+    }
+    spokenLanguages {
+      spokenLanguages {
+        text
+      }
+    }
+    countriesOfOrigin {
+      countries {
+        text
+      }
     }
     titleGenres {
       genres {
@@ -195,6 +207,8 @@ EOF;
             'reDirectId' => $this->checkRedirect($data),
             'movieType' => isset($data->title->titleType->text) ?
                                  $data->title->titleType->text : null,
+            'hasEpisode' => isset($data->title->titleType->canHaveEpisodes) ?
+                                 $data->title->titleType->canHaveEpisodes : false,
             'year' => isset($data->title->releaseYear->year) ?
                             $data->title->releaseYear->year : null,
             'endYear' => isset($data->title->releaseYear->endYear) ?
@@ -205,11 +219,29 @@ EOF;
                                $data->title->runtime->seconds / 60 : 0,
             'rating' => isset($data->title->ratingsSummary->aggregateRating) ?
                               $data->title->ratingsSummary->aggregateRating : 0,
+            'votes' => isset($data->title->ratingsSummary->voteCount) ?
+                              $data->title->ratingsSummary->voteCount : 0,
+            'language' => [],
+            'country' => [],
             'genre' => $this->genre($data),
             'plotoutline' => isset($data->title->plot->plotText->plainText) ?
                                    $data->title->plot->plotText->plainText : null,
             'credits' => $this->principalCredits($data)
         );
+        if (!empty($data->title->spokenLanguages->spokenLanguages)) {
+            foreach ($data->title->spokenLanguages->spokenLanguages as $language) {
+                if (!empty($language->text)) {
+                    $this->main['language'][] = $language->text;
+                }
+            }
+        }
+        if (!empty($data->title->countriesOfOrigin->countries)) {
+            foreach ($data->title->countriesOfOrigin->countries as $country) {
+                if (!empty($country->text)) {
+                    $this->main['country'][] = $country->text;
+                }
+            }
+        }
         return $this->main;
     }
 
