@@ -126,6 +126,16 @@ query TitleCombinedMain(\$id: ID!) {
     titleText {
       text
     }
+    series {
+      displayableEpisodeNumber {
+        episodeNumber {
+          text
+        }
+        displayableSeason {
+          text
+        }
+      }
+    }
     originalTitleText {
       text
     }
@@ -204,6 +214,8 @@ EOF;
             'originalTitle' => isset($data->title->originalTitleText->text) ?
                                      trim(str_replace('"', ':', trim($data->title->originalTitleText->text, '"'))) : null,
             'imdbid' => $this->imdbID,
+            'seasonNumber' => isset($data->title->series->displayableEpisodeNumber->displayableSeason->text) ? $data->title->series->displayableEpisodeNumber->displayableSeason->text : null,
+            'episodeNumber' => isset($data->title->series->displayableEpisodeNumber->episodeNumber->text) ? $data->title->series->displayableEpisodeNumber->episodeNumber->text : null,
             'reDirectId' => $this->checkRedirect($data),
             'movieType' => isset($data->title->titleType->text) ?
                                  $data->title->titleType->text : null,
