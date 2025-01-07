@@ -3379,6 +3379,49 @@ EOF;
             return false;
         }
     }
+    
+    public function episodesBySeasonNumber($season = 1) {
+                $query = <<<EOF
+query EpisodesBySeason(\$id: ID!, , \$seasons: [String!]) {
+  title(id: \$id) {
+      episodes {
+          episodes(filter: {includeSeasons: \$seasons}, first: 9999) {
+                edges {
+                  node {
+                    id
+                    series {
+                      displayableEpisodeNumber {
+                        episodeNumber {
+                          episodeNumber
+                        }
+                        displayableSeason {
+                          season
+                        }
+                      }
+                    }
+                  }
+                }
+          }
+      }
+  }
+}
+EOF;
+
+        $data = $this->graphql->query($query, "EpisodesBySeason", ["id" => "tt$this->imdbID", "seasons" => [strval($season)]]);
+        if (empty($data->title->episodes->episodes->edges)) {
+            return [];
+        }
+        $episodes = [];
+        foreach ($data->title->episodes->episodes->edges as $edge) {
+            $episode = [
+                'imdbid' => isset($edge->node->id) ? str_replace('tt', '', $edge->node->id) : null,
+                'season' => isset($edge->node->series->displayableEpisodeNumber->displayableSeason->season) ? $edge->node->series->displayableEpisodeNumber->displayableSeason->season : null,
+                'episode' => isset($edge->node->series->displayableEpisodeNumber->episodeNumber->episodeNumber) ? $edge->node->series->displayableEpisodeNumber->episodeNumber->episodeNumber : null,
+            ];
+            $episodes[] = $episode;
+        }
+        return $episodes;
+    }
 
     #----------------------------------------------------------[ Build date string for Episode() ]---
     /**
