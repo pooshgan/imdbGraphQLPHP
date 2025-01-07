@@ -126,22 +126,31 @@ query TitleCombinedMain(\$id: ID!) {
     titleText {
       text
     }
+    latestTrailer {
+        id
+    }
     series {
+      series {
+        id
+      }
       displayableEpisodeNumber {
         episodeNumber {
-          text
+          episodeNumber
         }
         displayableSeason {
-          text
+          season
         }
       }
+    }
+    certificate {
+        rating
     }
     originalTitleText {
       text
     }
     titleType {
       text
-      canHaveEpisodes
+      isSeries
     }
     releaseYear {
       year
@@ -214,13 +223,14 @@ EOF;
             'originalTitle' => isset($data->title->originalTitleText->text) ?
                                      trim(str_replace('"', ':', trim($data->title->originalTitleText->text, '"'))) : null,
             'imdbid' => $this->imdbID,
-            'seasonNumber' => isset($data->title->series->displayableEpisodeNumber->displayableSeason->text) ? $data->title->series->displayableEpisodeNumber->displayableSeason->text : null,
-            'episodeNumber' => isset($data->title->series->displayableEpisodeNumber->episodeNumber->text) ? $data->title->series->displayableEpisodeNumber->episodeNumber->text : null,
+            'parentSeriesId' => isset($data->title->series->series->id) ? $data->title->series->series->id : null,
+            'seasonNumber' => isset($data->title->series->displayableEpisodeNumber->displayableSeason->season) ? $data->title->series->displayableEpisodeNumber->displayableSeason->season : null,
+            'episodeNumber' => isset($data->title->series->displayableEpisodeNumber->episodeNumber->episodeNumber) ? $data->title->series->displayableEpisodeNumber->episodeNumber->episodeNumber : null,
             'reDirectId' => $this->checkRedirect($data),
             'movieType' => isset($data->title->titleType->text) ?
                                  $data->title->titleType->text : null,
-            'hasEpisode' => isset($data->title->titleType->canHaveEpisodes) ?
-                                 $data->title->titleType->canHaveEpisodes : false,
+            'isSeries' => isset($data->title->titleType->isSeries) ?
+                                 $data->title->titleType->isSeries : false,
             'year' => isset($data->title->releaseYear->year) ?
                             $data->title->releaseYear->year : null,
             'endYear' => isset($data->title->releaseYear->endYear) ?
@@ -235,6 +245,10 @@ EOF;
                               $data->title->ratingsSummary->voteCount : 0,
             'language' => [],
             'country' => [],
+            'ageLimit' => isset($data->title->certificate->rating) ?
+                              $data->title->certificate->rating : null,
+            'latestTrailer' => isset($data->title->latestTrailer->id) ?
+                              $data->title->latestTrailer->id : null,
             'genre' => $this->genre($data),
             'plotoutline' => isset($data->title->plot->plotText->plainText) ?
                                    $data->title->plot->plotText->plainText : null,
