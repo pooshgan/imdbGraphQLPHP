@@ -203,6 +203,16 @@ query TitleCombinedMain(\$id: ID!) {
           nameText {
             text
           }
+          bio {
+            text {
+              plainText
+            }
+          }
+          primaryImage {
+            url
+            width
+            height
+          }
           id
         }
         category {
@@ -290,7 +300,7 @@ EOF;
                 $parameter = $this->imageFunctions->resultParameter($fullImageWidth, $fullImageHeight, $this->newImageWidth, $this->newImageHeight);
                 return $img . $parameter;
             } else {
-                return $img . 'QL100_SX1000_.jpg';
+                return $img . 'QL75_SX1000_.jpg';
             }
         } else {
             return null;
@@ -342,14 +352,22 @@ EOF;
             if (!empty($value->credits[0]->category->text)) {
                 $category = $value->credits[0]->category->text;
                 if ($category == "Actor" || $category == "Actress") {
-                    $category = "Star";
+                    $category = "Actor";
                 }
             }
             if (!empty($value->credits)) {
                 foreach ($value->credits as $credit) {
+                    $imgUrl = null;
+                    if (!empty($credit->name->primaryImage->url)) {
+                        $img = str_replace('.jpg', '', $credit->name->primaryImage->url);
+                        $imgUrl = $img . 'QL75_UX1000_.jpg';
+                    }
                     $credits[] = array(
                         'name' => isset($credit->name->nameText->text) ?
                                         $credit->name->nameText->text : null,
+                        'bio' => isset($credit->name->bio->text->plainText) ?
+                                        $credit->name->bio->text->plainText : null,
+                        'imgUrl' => $imgUrl,
                         'imdbid' => isset($credit->name->id) ?
                                           str_replace('nm', '', $credit->name->id) : null
                     );
