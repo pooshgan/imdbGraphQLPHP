@@ -233,7 +233,7 @@ EOF;
             'originalTitle' => isset($data->title->originalTitleText->text) ?
                                      trim(str_replace('"', ':', trim($data->title->originalTitleText->text, '"'))) : null,
             'imdbid' => $this->imdbID,
-            'parentSeriesId' => isset($data->title->series->series->id) ? $data->title->series->series->id : null,
+            'parentSeriesId' => isset($data->title->series->series->id) ? str_replace('tt', '', $data->title->series->series->id) : null,
             'seasonNumber' => isset($data->title->series->displayableEpisodeNumber->displayableSeason->season) ? $data->title->series->displayableEpisodeNumber->displayableSeason->season : null,
             'episodeNumber' => isset($data->title->series->displayableEpisodeNumber->episodeNumber->episodeNumber) ? $data->title->series->displayableEpisodeNumber->episodeNumber->episodeNumber : null,
             'reDirectId' => $this->checkRedirect($data),
