@@ -85,7 +85,7 @@ class GraphQL
             array(
                 'operationName' => $queryName,
                 'query' => $query,
-                'variables' => $variables
+                'variables' => empty($variables) ? null : $variables
             )
         );
         $this->logger->info("[GraphQL] Requesting $queryName");
