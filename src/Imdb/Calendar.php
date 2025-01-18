@@ -36,6 +36,19 @@ class Calendar extends MdbBase
         $this->newImageWidth = $this->config->calendarThumbnailWidth;
         $this->newImageHeight = $this->config->calendarThumbnailHeight;
     }
+    
+    protected function buildDateString($dateParts)
+    {
+        if (!isset($dateParts['month'], $dateParts['day'], $dateParts['year'])) {
+            return false;
+        }
+        
+        $year = $dateParts['year'];
+        $month = $dateParts['month'];
+        $day = $dateParts['day'];
+        
+        return "{$year}-{$month}-{$day}";
+    }
 
     /**
      * Get upcoming movie releases as seen on IMDb
