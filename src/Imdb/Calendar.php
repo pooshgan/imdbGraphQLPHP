@@ -46,6 +46,8 @@ class Calendar extends MdbBase
         $year = $dateParts['year'];
         $month = $dateParts['month'];
         $day = $dateParts['day'];
+        $releaseDate = "{$year}-{$month}-{$day}";
+        $releaseDate = date("Y-m-d", strtotime($releaseDate));
         
         return "{$year}-{$month}-{$day}";
     }
