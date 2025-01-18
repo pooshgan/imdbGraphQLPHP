@@ -167,6 +167,9 @@ query TitleCombinedMain(\$id: ID!) {
     ratingsSummary {
       aggregateRating
       voteCount
+      topRanking {
+        rank
+      }
     }
     spokenLanguages {
       spokenLanguages {
