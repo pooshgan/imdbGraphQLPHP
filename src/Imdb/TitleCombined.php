@@ -256,6 +256,8 @@ EOF;
                               $data->title->ratingsSummary->aggregateRating : 0,
             'votes' => isset($data->title->ratingsSummary->voteCount) ?
                               $data->title->ratingsSummary->voteCount : 0,
+            'topRank' => isset($data->title->ratingsSummary->topRanking->rank) ?
+                              $data->title->ratingsSummary->topRanking->rank : 0,
             'language' => [],
             'country' => [],
             'ageLimit' => isset($data->title->certificate->rating) ?
